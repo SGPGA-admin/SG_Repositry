@@ -668,7 +668,7 @@ def to_excel(df):
     return processed_data
 
 # =========================================================
-# 롤링 배너 HTML/CSS 컴포넌트 함수 (수정된 안전한 구조)
+# 롤링 배너 HTML/CSS 컴포넌트 함수 (왼쪽 -> 오른쪽 방향 적용)
 # =========================================================
 def render_rolling_banner(notices):
     if not notices:
@@ -699,7 +699,8 @@ def render_rolling_banner(notices):
         white-space: nowrap;
         position: absolute;
         will-change: transform;
-        animation: scrollLeftToRight 20s linear infinite;
+        /* 왼쪽에서 오른쪽으로 흐르도록 수정 (전체 길이의 50% 지점에서 시작해 0%로 이동) */
+        animation: scrollRightToLeft 25s linear infinite;
     }}
     .rolling-track:hover {{
         animation-play-state: paused;
@@ -712,9 +713,9 @@ def render_rolling_banner(notices):
         font-size: 15px;
         margin-right: 60px;
     }}
-    @keyframes scrollLeftToRight {{
-        0% {{ transform: translateX(0%); }}
-        100% {{ transform: translateX(-50%); }}
+    @keyframes scrollRightToLeft {{
+        0% {{ transform: translateX(-50%); }}
+        100% {{ transform: translateX(0%); }}
     }}
     </style>
     <div class="rolling-container">
