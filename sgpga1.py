@@ -827,17 +827,7 @@ selected_menu = st.sidebar.radio(
 
 st.session_state.nav_menu = selected_menu
 
-# =========================================================
-# 실시간 롤링 배너 출력 영역
-# =========================================================
-# st.session_state.shot_achievements에 있는 알림 리스트를 그대로 연동하거나 커스텀 텍스트를 넣을 수 있습니다.
-notices_to_show = st.session_state.shot_achievements if st.session_state.shot_achievements else [
-    "제2회 SGPGA 오픈 챔피언십 대회가 개최되었습니다. 멋진 샷을 기대합니다!"
-]
-render_rolling_banner(notices_to_show, animation_duration=20)
 
-
-st.title("⛳ SGPGA 통합 관리 시스템")
 
 # =========================================================
 # [상단 실시간 베너] 홀인원, 알바트로스, 이글, 버디 실시간 롤링 알림
