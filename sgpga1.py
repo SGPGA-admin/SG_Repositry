@@ -866,7 +866,7 @@ if st.session_state.nav_menu == "대회/선수 관리":
             col_t1, col_t2, col_t3 = st.columns(3)
             new_t_id = col_t1.text_input("대회 ID", value=f"T0{len(st.session_state.tournaments_list)+1:02d}")
             new_t_name = col_t2.text_input("대회명", placeholder="제2회 SGPGA 오픈 챔피언십")
-            new_t_cc = col_t3.selectbox("개철 골프장", options=list(GOLF_COURSES.keys()))
+            new_t_cc = col_t3.selectbox("개최 골프장", options=list(GOLF_COURSES.keys()))
             
             col_t4, col_t5 = st.columns(2)
             total_prize_pool = col_t4.number_input("대회 총상금 (원)", min_value=0, value=20000000, step=1000000, format="%d")
