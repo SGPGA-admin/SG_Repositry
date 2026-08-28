@@ -842,31 +842,34 @@ st.title("⛳ SGPGA 통합 관리 시스템")
 # =========================================================
 # [상단 실시간 베너] 홀인원, 알바트로스, 이글, 버디 실시간 롤링 알림
 # =========================================================
-if st.session_state.shot_achievements:
-    achievements = st.session_state.shot_achievements
-    count = len(achievements)
-    
-    li_items = "".join([f"<li>📢 [실시간 피드] {notice}</li>" for notice in achievements])
-    if count > 1:
-        li_items += f"<li>📢 [실시간 피드] {achievements[0]}</li>"
-        total_steps = count + 1
-    else:
-        total_steps = 1
+import streamlit as st
 
-    keyframes_rules = ""
+# =========================================================
+# 1. 롤링 배너 함수 정의 (파일 상단 아무 곳이나 혹은 함수 모음 파일에 배치)
+# =========================================================
+def render_rolling_banner(notices):
+    """실시간 롤링 배너를 렌더링하는 함수"""
+    if not notices:
+        notices = ["제2회 SGPGA 오픈 챔피언십 대회가 개최되었습니다. 멋진 샷을 기대합니다!"]
+        
+    count = len(notices)
+    li_items = "".join([f"<li>📢 [실시간 피드] {notice}</li>" for notice in notices])
+    
     if count > 1:
+        li_items += f"<li>📢 [실시간 피드] {notices[0]}</li>"
+        total_steps = count + 1
         step_percent = 100 / total_steps
         rules = []
         for i in range(total_steps):
             pct = round(i * step_percent, 2)
-            y_pos = i * 40
+            y_pos = i * 60  # li 높이(60px) 기준 이동
             rules.append(f"{pct}% {{ transform: translateY(-{y_pos}px); }}")
-        rules.append(f"100% {{ transform: translateY(-{(total_steps - 1) * 40}px); }}")
+        rules.append(f"100% {{ transform: translateY(-{(total_steps - 1) * 60}px); }}")
         keyframes_rules = " ".join(rules)
+        animation_duration = count * 4
     else:
         keyframes_rules = "0% { transform: translateY(0); } 100% { transform: translateY(0); }"
-
-    animation_duration = count * 4 if count > 1 else 0
+        animation_duration = 0
 
     st.markdown(
         f"""
@@ -911,7 +914,21 @@ if st.session_state.shot_achievements:
         unsafe_allow_html=True
     )
 
+# =========================================================
+# 2. 메인 페이지 화면 구성 (이전에 작성하신 원래 위치)
+# =========================================================
 st.title("⛳ SGPGA 통합 관리 시스템")
+
+# 세션 상태에서 알림 데이터 가져오기 (없으면 기본값 사용)
+notices_to_show = st.session_state.get("shot_achievements") or [
+    "제2회 SGPGA 오픈 챔피언십 대회가 개최되었습니다. 멋진 샷을 기대합니다!"
+]
+
+# 위에서 정의한 함수를 호출하여 배너 출력
+render_rolling_banner(notices_to_show)
+
+# 이후에 이어지는 다른 st 코드들을 여기에 작성하시면 됩니다.
+
 
 if st.session_state.final_winner:
     st.success(f"🏆 **[대회 최종 우승 확정]** 👑 **{st.session_state.final_winner}** 👑 축하합니다! 🎉")
