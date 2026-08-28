@@ -189,7 +189,9 @@ if "hall_of_fame" not in st.session_state:
 # 3. 실시간 멋진 샷(홀인원, 이글 등) 알림 피드
 if "shot_achievements" not in st.session_state:
     st.session_state.shot_achievements = [
-        "⛳ [알림] 제2회 SGPGA 오픈 챔피언십 대회가 개최되었습니다. 멋진 샷을 기대합니다!"
+        "⛳ [알림] 제2회 SGPGA 오픈 챔피언십 대회가 개최되었습니다. 멋진 샷을 기대합니다!",
+        "🔥 [실시간] 박상주 선수 버디 기록!",
+        "🦅 [실시간] 윤덕 선수 이글 기록 달성!"
     ]
 
 # 4. 선수 데이터베이스 (16명 샘플)
@@ -666,12 +668,14 @@ def to_excel(df):
     return processed_data
 
 # =========================================================
-# 롤링 배너 HTML/CSS 컴포넌트 함수 추가
+# 롤링 배너 HTML/CSS 컴포넌트 함수 (수정된 안전한 구조)
 # =========================================================
-def render_rolling_banner(notices, animation_duration=18):
+def render_rolling_banner(notices):
     if not notices:
-        return
-    notices_html = "".join([f'<span class="rolling-item">📢 {notice}</span>' for notice in notices])
+        notices = ["제2회 SGPGA 오픈 챔피언십 대회가 개최되었습니다. 멋진 샷을 기대합니다!"]
+    
+    # 텍스트 아이템들을 두 번 반복하여 끊김 없는 무한 스크롤 구현
+    notices_html = "".join([f'<div class="rolling-item">📢 {notice}</div>' for notice in notices])
     loop_html = notices_html + notices_html
 
     banner_html = f"""
@@ -695,7 +699,10 @@ def render_rolling_banner(notices, animation_duration=18):
         white-space: nowrap;
         position: absolute;
         will-change: transform;
-        animation: scrollLeftToRight {animation_duration}s linear infinite;
+        animation: scrollLeftToRight 20s linear infinite;
+    }}
+    .rolling-track:hover {{
+        animation-play-state: paused;
     }}
     .rolling-item {{
         display: inline-flex;
@@ -703,11 +710,11 @@ def render_rolling_banner(notices, animation_duration=18):
         font-weight: bold;
         color: #856404;
         font-size: 15px;
-        margin-right: 50px;
+        margin-right: 60px;
     }}
     @keyframes scrollLeftToRight {{
-        0% {{ transform: translateX(-50%); }}
-        100% {{ transform: translateX(0%); }}
+        0% {{ transform: translateX(0%); }}
+        100% {{ transform: translateX(-50%); }}
     }}
     </style>
     <div class="rolling-container">
@@ -827,98 +834,16 @@ selected_menu = st.sidebar.radio(
 
 st.session_state.nav_menu = selected_menu
 
-
-
 # =========================================================
-# [상단 실시간 베너] 홀인원, 알바트로스, 이글, 버디 실시간 롤링 알림
-# =========================================================
-import streamlit as st
-
-# =========================================================
-# 1. 롤링 배너 함수 정의 (파일 상단 아무 곳이나 혹은 함수 모음 파일에 배치)
-# =========================================================
-def render_rolling_banner(notices):
-    """실시간 롤링 배너를 렌더링하는 함수"""
-    if not notices:
-        notices = ["제2회 SGPGA 오픈 챔피언십 대회가 개최되었습니다. 멋진 샷을 기대합니다!"]
-        
-    count = len(notices)
-    li_items = "".join([f"<li>📢 [실시간 피드] {notice}</li>" for notice in notices])
-    
-    if count > 1:
-        li_items += f"<li>📢 [실시간 피드] {notices[0]}</li>"
-        total_steps = count + 1
-        step_percent = 100 / total_steps
-        rules = []
-        for i in range(total_steps):
-            pct = round(i * step_percent, 2)
-            y_pos = i * 60  # li 높이(60px) 기준 이동
-            rules.append(f"{pct}% {{ transform: translateY(-{y_pos}px); }}")
-        rules.append(f"100% {{ transform: translateY(-{(total_steps - 1) * 60}px); }}")
-        keyframes_rules = " ".join(rules)
-        animation_duration = count * 4
-    else:
-        keyframes_rules = "0% { transform: translateY(0); } 100% { transform: translateY(0); }"
-        animation_duration = 0
-
-    st.markdown(
-        f"""
-        <style>
-        .rolling-container {{
-            background-color: #fffae6;
-            border-left: 5px solid #ffc107;
-            padding: 0 15px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            height: 60px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-        }}
-        .rolling-list {{
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            animation: slideUp {animation_duration}s cubic-bezier(0.23, 1, 0.32, 1) infinite;
-        }}
-        .rolling-list li {{
-            height: 60px;
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-            color: #856404;
-            font-size: 15px;
-        }}
-        @keyframes slideUp {{
-            {keyframes_rules}
-        }}
-        </style>
-        
-        <div class="rolling-container">
-            <ul class="rolling-list">
-                {li_items}
-            </ul>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-# =========================================================
-# 2. 메인 페이지 화면 구성 (이전에 작성하신 원래 위치)
+# 메인 페이지 화면 구성
 # =========================================================
 st.title("⛳ SGPGA 통합 관리 시스템")
 
-# 세션 상태에서 알림 데이터 가져오기 (없으면 기본값 사용)
+# 실시간 롤링 배너 출력
 notices_to_show = st.session_state.get("shot_achievements") or [
     "제2회 SGPGA 오픈 챔피언십 대회가 개최되었습니다. 멋진 샷을 기대합니다!"
 ]
-
-# 위에서 정의한 함수를 호출하여 배너 출력
 render_rolling_banner(notices_to_show)
-
-# 이후에 이어지는 다른 st 코드들을 여기에 작성하시면 됩니다.
-
 
 if st.session_state.final_winner:
     st.success(f"🏆 **[대회 최종 우승 확정]** 👑 **{st.session_state.final_winner}** 👑 축하합니다! 🎉")
