@@ -815,7 +815,7 @@ if st.session_state.shot_achievements:
             margin-bottom: 15px;
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            height: 40px;
+            height: 60px;
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -827,7 +827,7 @@ if st.session_state.shot_achievements:
             animation: slideUp {animation_duration}s cubic-bezier(0.23, 1, 0.32, 1) infinite;
         }}
         .rolling-list li {{
-            height: 40px;
+            height: 60px;
             display: flex;
             align-items: center;
             font-weight: bold;
