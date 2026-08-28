@@ -665,6 +665,57 @@ def to_excel(df):
     processed_data = output.getvalue()
     return processed_data
 
+# =========================================================
+# 롤링 배너 HTML/CSS 컴포넌트 함수 추가
+# =========================================================
+def render_rolling_banner(notices, animation_duration=18):
+    if not notices:
+        return
+    notices_html = "".join([f'<span class="rolling-item">📢 {notice}</span>' for notice in notices])
+    loop_html = notices_html + notices_html
+
+    banner_html = f"""
+    <style>
+    .rolling-container {{
+        background-color: #fffae6;
+        border-left: 5px solid #ffc107;
+        padding: 0 15px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        height: 45px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        position: relative;
+        width: 100%;
+    }}
+    .rolling-track {{
+        display: flex;
+        white-space: nowrap;
+        position: absolute;
+        will-change: transform;
+        animation: scrollLeftToRight {animation_duration}s linear infinite;
+    }}
+    .rolling-item {{
+        display: inline-flex;
+        align-items: center;
+        font-weight: bold;
+        color: #856404;
+        font-size: 15px;
+        margin-right: 50px;
+    }}
+    @keyframes scrollLeftToRight {{
+        0% {{ transform: translateX(-50%); }}
+        100% {{ transform: translateX(0%); }}
+    }}
+    </style>
+    <div class="rolling-container">
+        <div class="rolling-track">{loop_html}</div>
+    </div>
+    """
+    st.markdown(banner_html, unsafe_allow_html=True)
+
 # 예선전 동일인 다중 라운드 참여 지원 스코어카드 렌더링 및 저장 함수
 def render_and_save_scorecard_section(player_names, stage_name, course_info):
     front_pars, back_pars = parse_course_pars(course_info)
@@ -775,6 +826,18 @@ selected_menu = st.sidebar.radio(
 )
 
 st.session_state.nav_menu = selected_menu
+
+# =========================================================
+# 실시간 롤링 배너 출력 영역
+# =========================================================
+# st.session_state.shot_achievements에 있는 알림 리스트를 그대로 연동하거나 커스텀 텍스트를 넣을 수 있습니다.
+notices_to_show = st.session_state.shot_achievements if st.session_state.shot_achievements else [
+    "제2회 SGPGA 오픈 챔피언십 대회가 개최되었습니다. 멋진 샷을 기대합니다!"
+]
+render_rolling_banner(notices_to_show, animation_duration=20)
+
+
+st.title("⛳ SGPGA 통합 관리 시스템")
 
 # =========================================================
 # [상단 실시간 베너] 홀인원, 알바트로스, 이글, 버디 실시간 롤링 알림
