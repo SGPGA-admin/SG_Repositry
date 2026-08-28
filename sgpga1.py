@@ -6,7 +6,7 @@ import numpy as np
 from io import BytesIO
 
 # =========================================================
-# 페이지 설정 및 KPGA 스타일 디자인 (CSS 커스텀)
+# 페이지 설정 및 KPGA 스타일 디자인 (모바일 반응형 CSS 추가)
 # =========================================================
 st.set_page_config(
     page_title="SGPGA - (주)시공사 골프협회",
@@ -15,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# KPGA 브랜드 컬러 및 디자인 시스템 적용 (딥 네이비, 골드/화이트 포인트)
+# KPGA 브랜드 컬러 및 디자인 시스템 적용 + 모바일 반응형 UI 보완
 st.markdown("""
     <style>
     /* 메인 배경 및 폰트 설정 */
@@ -28,9 +28,9 @@ st.markdown("""
     .kpga-header {
         background: linear-gradient(135deg, #0A192F 0%, #1E3A8A 100%);
         color: white;
-        padding: 24px 30px;
+        padding: 20px 24px;
         border-radius: 8px;
-        margin-bottom: 25px;
+        margin-bottom: 20px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         display: flex;
         justify-content: space-between;
@@ -38,13 +38,13 @@ st.markdown("""
     }
     .kpga-header h1 {
         margin: 0;
-        font-size: 26px;
+        font-size: 22px;
         font-weight: 700;
         letter-spacing: -0.5px;
     }
     .kpga-header p {
         margin: 5px 0 0 0;
-        font-size: 14px;
+        font-size: 12px;
         color: #93c5fd;
     }
 
@@ -54,7 +54,7 @@ st.markdown("""
         border-right: 1px solid #e2e8f0;
     }
     section[data-testid="stSidebar"] .block-container {
-        padding-top: 2rem;
+        padding-top: 1.5rem;
     }
 
     /* 카드 및 컨테이너 스타일 */
@@ -62,8 +62,8 @@ st.markdown("""
         background-color: #ffffff;
         border: 1px solid #e2e8f0;
         border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 20px;
+        padding: 15px;
+        margin-bottom: 15px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
     
@@ -73,6 +73,7 @@ st.markdown("""
         color: white !important;
         text-align: center !important;
         font-weight: 600 !important;
+        font-size: 13px !important;
     }
 
     /* 버튼 스타일 다듬기 */
@@ -84,6 +85,7 @@ st.markdown("""
         font-weight: 600;
         padding: 0.5rem 1rem;
         transition: background-color 0.2s;
+        width: 100%;
     }
     .stButton>button:hover {
         background-color: #0A192F;
@@ -92,34 +94,66 @@ st.markdown("""
 
     /* 탭 스타일 조정 */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
+        gap: 4px;
         background-color: transparent;
     }
     .stTabs [data-baseweb="tab"] {
         background-color: #ffffff;
         border-radius: 4px 4px 0 0;
         border: 1px solid #e2e8f0;
-        padding: 10px 20px;
+        padding: 8px 12px;
         font-weight: 600;
         color: #475569;
+        font-size: 13px;
     }
     .stTabs [aria-selected="true"] {
         background-color: #1E3A8A !important;
         color: white !important;
         border-color: #1E3A8A !important;
     }
+
+    /* =========================================================
+       모바일 화면(너비 768px 이하) 최적화 미디어 쿼리
+       ========================================================= */
+    @media (max-width: 768px) {
+        /* 상단 헤더 세로 정렬로 변경하여 찌그러짐 방지 */
+        .kpga-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 15px;
+        }
+        .kpga-header h1 {
+            font-size: 18px;
+        }
+        .kpga-header div:last-child {
+            margin-top: 8px;
+            text-align: left !important;
+        }
+        
+        /* 스코어 입력 등 9개 컬럼 인풋 셀이 모바일에서 좁아지지 않도록 간격 조정 */
+        .stNumberInput input {
+            font-size: 14px !important;
+            padding: 2px !important;
+        }
+        
+        /* 여백 줄이기 */
+        .block-container {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# 상단 브랜드 헤더 영역 (KPGA 공식 웹 스타일)
+# 상단 브랜드 헤더 영역
 st.markdown("""
     <div class="kpga-header">
         <div>
             <h1>SGPGA 공식 토너먼트 운영 시스템</h1>
-            <p>SMART GOLF PROFESSIONAL GOLF ASSOCIATION - TOURNAMENT MANAGEMENT</p>
+            <p>SMART GOLF PROFESSIONAL GOLF ASSOCIATION</p>
         </div>
-        <div style="text-align: right; font-size: 13px; color: #cbd5e1;">
-            OFFICIAL PORTAL<br><b>V2.0 PRO</b>
+        <div style="text-align: right; font-size: 12px; color: #cbd5e1;">
+            OFFICIAL PORTAL<br><b>V2.0 MOBILE</b>
         </div>
     </div>
 """, unsafe_allow_html=True)
